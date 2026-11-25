@@ -1,0 +1,48 @@
+---
+import type { CaseStudy } from '../lib/types';
+interface Props { cases: CaseStudy[] }
+const { cases } = Astro.props;
+---
+<div class="case-list" data-case-list>
+  {cases.map((c) => (
+    <a href={`/case/${c.slug}`} class="case-row reveal" data-cover={c.cover.url ?? ''}>
+      <span class="t">{c.title}</span>
+      <span class="mono">{c.company}</span>
+    </a>
+  ))}
+  <div class="case-list-end"></div>
+  <div class="case-float" aria-hidden="true" data-float><img alt="" /></div>
+</div>
+
+<script>
+  // Cover floats next to the cursor while hovering a row; other rows dim.
+  document.querySelectorAll<HTMLElement>('[data-case-list]').forEach((list) => {
+    const float = list.querySelector<HTMLElement>('[data-float]')!;
+    const img = float.querySelector('img')!;
+    let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
+    const tick = () => {
+      cx += (x - cx) * 0.18; cy += (y - cy) * 0.18;
+      float.style.left = cx + 'px'; float.style.top = cy + 'px';
+      raf = requestAnimationFrame(tick);
+    };
+    list.addEventListener('mousemove', (e) => {
+      const r = list.getBoundingClientRect();
+      x = e.clientX - r.left; y = e.clientY - r.top;
+    });
+    list.querySelectorAll<HTMLElement>('.case-row').forEach((row) => {
+      row.addEventListener('mouseenter', () => {
+        list.classList.add('hovering');
+        list.querySelectorAll('.case-row.active').forEach((r) => r.classList.remove('active'));
+        row.classList.add('active');
+        const src = row.dataset.cover;
+        if (src) { img.src = src; float.classList.add('on'); } else { img.removeAttribute('src'); float.classList.add('on'); }
+        if (!raf) raf = requestAnimationFrame(tick);
+      });
+    });
+    list.addEventListener('mouseleave', () => {
+      list.classList.remove('hovering');
+      float.classList.remove('on');
+      cancelAnimationFrame(raf); raf = 0;
+    });
+  });
+</script>

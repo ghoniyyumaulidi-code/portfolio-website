@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CaseList from '../../components/CaseList.astro';
+import Cta from '../../components/Cta.astro';
+import { getCases } from '../../lib/data';
+const cases = await getCases();
+---
+<Layout title="Selected Case · Ghoniyyu Maulidi" active="case">
+  <section class="wrap" style="padding-top: clamp(72px, 10vw, 150px); padding-bottom: 80px">
+    <h1 class="serif-title" style="font-size: clamp(64px, 10vw, 176px)">
+      <span class="line"><span>Selected Case</span></span>
+    </h1>
+  </section>
+  <section class="wrap" style="padding-bottom: 140px">
+    <CaseList cases={cases} />
+  </section>
+  <Cta line1="Beyond the office," line2="40+ freelance works." primary={{ label: 'Explore works', href: '/works' }} />
+</Layout>

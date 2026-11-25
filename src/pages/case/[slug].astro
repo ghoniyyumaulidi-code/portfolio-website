@@ -1,0 +1,83 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MediaBox from '../../components/Media.astro';
+import Blocks from '../../components/Blocks.astro';
+import CaseList from '../../components/CaseList.astro';
+import { getCases } from '../../lib/data';
+import type { Block } from '../../lib/types';
+
+export async function getStaticPaths() {
+  const cases = await getCases();
+  return cases.map((c, i) => ({
+    params: { slug: c.slug },
+    props: { c, next: cases[(i + 1) % cases.length], more: [1, 2, 3].map((k) => cases[(i + k) % cases.length]).filter((x) => x.slug !== c.slug) },
+  }));
+}
+const { c, next, more } = Astro.props;
+
+// Until real content is written in the CMS, show the case study structure.
+const k = (n: number) => `s${n}`;
+const outline: Block[] = ['Overview', 'The problem', 'My role', 'Process', 'Key decisions', 'Outcome'].flatMap((h, n) => [
+  { _type: 'block', _key: k(n * 2), style: 'h2', children: [{ text: h }] },
+  { _type: 'block', _key: k(n * 2 + 1), style: 'normal', children: [{ text: `[Write the ${h.toLowerCase()} here.]` }] },
+]) as Block[];
+const body = c.body.length ? c.body : outline;
+const headings = body.filter((b: any) => b._type === 'block' && b.style === 'h2').map((b: any) => b.children.map((x: any) => x.text).join(''));
+const id = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const info = [
+  ['Role', c.role],
+  ['Year', c.year],
+  ['Platform', c.platform],
+  ['Team', c.team?.length ? c.team.join(', ') : ''],
+].filter(([, v]) => v);
+---
+<Layout title={`${c.title} · Ghoniyyu Maulidi`} description={c.summary} light active="case">
+  <div class="case-grid wrap">
+    <section class="col" style="padding: 80px 0 56px">
+      {c.company && <div class="mono">{c.company}</div>}
+      <h1 class="h-hero" style="margin-top: 20px"><span class="line"><span>{c.title}</span></span></h1>
+      {c.summary && <p class="reveal" style="margin: 28px 0 0; font-size: 20px; line-height: 1.55; color: var(--muted)">{c.summary}</p>}
+      {info.length > 0 && (
+        <dl class="info reveal">{info.map(([l, v]) => <div><dt>{l}</dt><dd>{v}</dd></div>)}</dl>
+      )}
+    </section>
+
+    <div class="full"><MediaBox media={c.cover} ratio={16 / 10} contain class="grow" /></div>
+
+    <article class="col article" style="grid-row: 3">
+      <Blocks blocks={body} sectioned />
+      {c.metricValue && <div class="metric reveal"><b>{c.metricValue}</b><span>{c.metricLabel}</span></div>}
+    </article>
+
+    {headings.length > 1 && (
+      <aside class="toc" aria-label="On this page">
+        <nav data-toc>{headings.map((h: string) => <a href={`#${id(h)}`}>{h}</a>)}</nav>
+      </aside>
+    )}
+  </div>
+
+  <section class="dark wrap" style="padding-top: 112px; padding-bottom: 140px">
+    <a href={`/case/${next.slug}`} style="display: block">
+      <div class="mono">Next case</div>
+      <div class="reveal" style="margin-top: 16px; font-size: clamp(44px, 6vw, 96px); line-height: 1; letter-spacing: -0.04em">{next.title}</div>
+    </a>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin: 120px 0 32px">
+      <div class="mono">More cases</div>
+      <a class="btn" href="/case">View all cases</a>
+    </div>
+    <CaseList cases={more} />
+  </section>
+</Layout>
+
+<script>
+  // Highlight the section you are reading in the jump links.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc] a')];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      links.forEach((a) => a.classList.toggle('on', a.hash === '#' + e.target.id));
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  links.forEach((a) => { const t = document.querySelector(a.hash); if (t) io.observe(t); });
+  links[0]?.classList.add('on');
+</script>

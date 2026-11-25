@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Cta from '../components/Cta.astro';
+import { FREELANCE } from '../lib/site';
+
+const jobs = [
+  { company: 'PT Lippo Life Assurance (Vida)', period: 'Mar 2022 to Present', dur: '4 yrs 9 mos', roles: [{ title: 'UI/UX Manager', period: '', bullets: [
+    'Revamped the digital insurance purchasing journey, from product discovery to checkout, raising the conversion rate from 15% to 23%.',
+    'Rebuilt the back-office platform for Operations teams, redesigning its UI components and workflows to cut claim review time by 75%.',
+    'Designed Vida Essential, the first wellness insurance launched through a digital marketing approach, giving customers access to 120+ brands and 300+ clinics across Indonesia.',
+    'Designed new Vida app features from scratch, including hospital appointments, Advance Premium payments, AI-powered services, and multi-account family insurance, and created the brand mascots The Clover and Mbak Vida.',
+    'Designed a sales ecosystem platform that integrates data and workflows for distribution teams and a B2B insurance platform for employee benefits.',
+    "Led a team of 2 designers by adapting to each person's strengths and working style, building ownership through trust and autonomy." ] }] },
+  { company: 'Onigiri Design Studio', period: 'Apr 2024 to Jul 2024', dur: '4 mos', roles: [{ title: 'Senior Design Manager', period: '', bullets: [
+    'Managed UI/UX design projects, overseeing timelines, task coordination, and delivery across multiple projects.',
+    'Delivered e-commerce websites from brief to launch, coordinating clients and internal teams and supporting development in Webflow.',
+    'Designed brand logos and visual identities for client pitches and branding initiatives.' ] }] },
+  { company: 'Mola', period: 'Apr 2018 to Mar 2022', dur: '4 yrs', roles: [
+    { title: 'Section Head UX Designer', period: 'Mar 2020 to Mar 2022', bullets: [
+      'Led a team of 3 UX Designers, overseeing design execution, quality standards, and consistency across product initiatives.',
+      "Drove UX readiness for Mola's international expansion across the UK, Italy, Malaysia, and Singapore, ensuring product experiences aligned with regional requirements.",
+      'Aligned UX deliverables with product direction and business objectives across cross-functional teams.' ] },
+    { title: 'Senior UX Designer', period: 'Jan 2019 to Mar 2020', bullets: [
+      'Designed and launched three key product features: Live Menu, Explore Menu, and Mola Radio, across app, web, and Smart TV platforms.',
+      'Redesigned the Video Manager System, reducing video management workflow time from 8 to 10 minutes to just 3 minutes per video.',
+      'Designed and delivered 5+ campaign microsites in collaboration with Business and Growth teams to support marketing initiatives.' ] },
+    { title: 'UI/UX Designer', period: 'Apr 2018 to Jan 2019', bullets: [
+      'Translated product requirements into user flows, wireframes, and UI designs, working with UX Designers and Product Owners to deliver user-centered experiences.' ] } ] },
+  { company: 'Kitani Studio', period: 'Jun 2020 to Mar 2026', dur: '5 yrs 10 mos', roles: [
+    { title: 'Design Consultant', period: 'Jul 2023 to Mar 2026', bullets: [
+      'Expanded Kitani Studio into client design services, delivering 10+ projects across fintech, agribusiness, wellness, and networking.',
+      'Led client engagements from briefing to timeline, budget, and final delivery, keeping visual consistency across projects.' ] },
+    { title: 'Co-Founder & Designer', period: 'Jun 2020 to Jun 2023', bullets: [
+      'Led end-to-end product development, from ideation and UI/UX design to branding and product launches, building a portfolio of 20+ digital products with over 2,500 items sold on UI8.' ] } ] },
+  { company: 'Moselo', period: 'Nov 2017 to Feb 2018', dur: '4 mos', roles: [{ title: 'UI/UX Designer', period: '', bullets: [
+    'Designed UI and layouts for new app and web features, and created social media visuals and article headers to support marketing.' ] }] },
+  { company: 'Olride', period: 'Aug 2016 to Jul 2017', dur: '1 yr', roles: [{ title: 'Digital Designer', period: '', bullets: [
+    'Designed UI and layouts for new app and web features, and created social media visuals, article headers, and photo edits for marketing.' ] }] },
+  { company: 'Earlier experience', period: '2015 to 2021', dur: '', roles: [
+    { title: 'Riliv, UX Designer, part time', period: 'Oct 2020 to Jan 2021', bullets: [] },
+    { title: 'Flipbox, Graphic Designer Intern', period: 'Sep 2015 to Dec 2015', bullets: [] } ] },
+];
+const education = [
+  { n: 'Universitas Trisakti', d: "Bachelor's Degree (S1), Visual Communication Design", y: '2017 to 2018' },
+  { n: 'Universitas Brawijaya', d: 'Diploma (D3), Visual Communication Design', y: '2013 to 2016' },
+];
+const recognition = [
+  { n: 'UI/UX Judge, INSPACE', d: 'Evaluated finalist product prototypes and presentations.', y: '2026' },
+  { n: 'Judge, harisenin.com', d: 'Evaluated final presentations of the UI/UX Design & Product Management Bootcamp.', y: '2024' },
+];
+---
+<Layout title="About · Ghoniyyu Maulidi" active="about">
+  <section class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: flex-end; padding-top: clamp(72px, 11vw, 160px); padding-bottom: 112px">
+    <div style="flex: 2 1 560px">
+      <h1 class="h-hero">
+        <span class="line"><span>I try to truly feel</span></span>
+        <span class="line"><span style="animation-delay: .12s">what I design.</span></span>
+      </h1>
+      <p class="reveal muted" style="margin: 40px 0 0; max-width: 820px; font-size: 18px; line-height: 1.7">I'm a versatile UI/UX designer with 9+ years of experience turning complex systems into experiences that feel simple and human, from insurance systems connected to hospitals and TPAs across Indonesia to an OTT streaming CMS and new features across desktop, mobile, and TV.</p>
+      <div class="freelance reveal">
+        <div class="mono" style="margin-bottom: 8px">Freelance &amp; community</div>
+        {FREELANCE.map((s) => <a href={s.url} target="_blank" rel="noopener"><span>{s.name}</span><span class="muted">{s.meta}</span></a>)}
+      </div>
+    </div>
+    <div class="media grow" style="flex: 1 1 300px; max-width: 420px; aspect-ratio: 4 / 5">
+      {/* Replace with your video collage: put about.mp4 in /public and remove the placeholder below */}
+      <div class="ph mono" style="height: 100%">Video collage, MP4 loop 4:5</div>
+    </div>
+  </section>
+
+  <section class="about-row" style="border-top: 1px solid var(--line)">
+    <div class="h"><h2 class="serif-title">Experience</h2></div>
+    <div class="c">
+      {jobs.map((j) => (
+        <div class="job reveal">
+          <div class="when"><div>{j.period}</div><div>{j.dur}</div></div>
+          <div class="what">
+            <div class="co">{j.company}</div>
+            {j.roles.map((r) => (
+              <div>
+                <div>{r.title} <span class="muted">{r.period}</span></div>
+                {r.bullets.length > 0 && <ul>{r.bullets.map((b) => <li>{b}</li>)}</ul>}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="about-row" style="padding-top: 56px">
+    <div class="h"><h2 class="serif-title">Education</h2></div>
+    <div class="c">{education.map((e) => <div class="simple reveal"><div><div class="n">{e.n}</div><div class="muted" style="margin-top: 4px">{e.d}</div></div><div class="muted">{e.y}</div></div>)}</div>
+  </section>
+
+  <section class="about-row" style="padding-top: 56px; padding-bottom: 112px">
+    <div class="h"><h2 class="serif-title">Recognition</h2></div>
+    <div class="c">{recognition.map((e) => <div class="simple reveal"><div><div class="n">{e.n}</div><div class="muted" style="margin-top: 4px">{e.d}</div></div><div class="muted">{e.y}</div></div>)}</div>
+  </section>
+
+  <Cta line1="Let's build something" line2="with soul." secondary={{ label: 'See all works', href: '/works' }} />
+</Layout>

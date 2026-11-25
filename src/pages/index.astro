@@ -1,0 +1,38 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CaseList from '../components/CaseList.astro';
+import Cta from '../components/Cta.astro';
+import { getCases } from '../lib/data';
+import { CLIENTS } from '../lib/site';
+const cases = (await getCases()).slice(0, 4);
+---
+<Layout>
+  <section class="wrap" style="padding-top: clamp(72px, 11vw, 160px); padding-bottom: 112px">
+    <h1 class="h-hero">
+      <span class="line"><span>A versatile designer with 9+ years,</span></span>
+      <span class="line"><span style="animation-delay: .12s">turning complex systems into</span></span>
+      <span class="line"><span style="animation-delay: .24s">experiences that feel simple and human.</span></span>
+    </h1>
+    <div class="btns reveal" style="margin-top: 56px">
+      <a class="btn btn-primary" href="#cases">Explore my work</a>
+      <a class="btn" href="/about">More about me</a>
+    </div>
+  </section>
+
+  <section id="cases" class="wrap" style="padding-top: 112px; padding-bottom: 112px; border-top: 1px solid var(--line)">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 48px">
+      <h2 class="serif-title reveal" style="font-size: clamp(48px, 5.4vw, 84px); line-height: 1">Selected Case</h2>
+      <a class="btn" href="/case">View all cases</a>
+    </div>
+    <CaseList cases={cases} />
+  </section>
+
+  <section class="wrap" style="padding-top: 72px; padding-bottom: 72px; border-top: 1px solid var(--line)">
+    <div class="mono" style="margin-bottom: 32px">Worked with</div>
+    <div class="clients reveal">
+      {CLIENTS.map((c) => <div>{c.logo ? <img src={c.logo} alt={c.name} /> : c.name}</div>)}
+    </div>
+  </section>
+
+  <Cta line1="Let's build something" line2="with soul." secondary={{ label: 'See all works', href: '/works' }} socials />
+</Layout>

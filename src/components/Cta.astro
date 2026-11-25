@@ -1,0 +1,28 @@
+---
+import { EMAIL } from '../lib/site';
+interface Props {
+  line1: string;
+  line2: string;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  socials?: boolean;
+}
+const {
+  line1,
+  line2,
+  primary = { label: 'Email me', href: `mailto:${EMAIL}` },
+  secondary,
+  socials = false,
+} = Astro.props;
+---
+<section class="cta">
+  <div class="cta-row">
+    <div>
+      <h2 class="h-hero reveal">{line1}<br />{line2}</h2>
+      <div class="btns reveal" style="margin-top: 40px">
+        <a class="btn btn-primary" href={primary.href}>{primary.label}</a>
+        {secondary && <a class="btn" href={secondary.href}>{secondary.label}</a>}
+      </div>
+    </div>
+  </div>
+</section>

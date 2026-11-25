@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MediaBox from '../../components/Media.astro';
+import Blocks from '../../components/Blocks.astro';
+import { getWorks } from '../../lib/data';
+
+export async function getStaticPaths() {
+  const works = await getWorks();
+  return works.map((w, i) => ({ params: { slug: w.slug }, props: { w, next: works[(i + 1) % works.length] } }));
+}
+const { w, next } = Astro.props;
+const info = [
+  ['Category', w.category],
+  ['Client', w.client],
+  ['Year', w.year],
+  ['Background', w.background],
+].filter(([, v]) => v);
+---
+<Layout title={`${w.title} · Ghoniyyu Maulidi`} description={w.background} active="works">
+  <section class="wrap" style="display: flex; flex-wrap: wrap; gap: 48px 64px; align-items: flex-start; padding-top: 80px; padding-bottom: 32px">
+    <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 40px">
+      <h1 class="h-hero"><span class="line"><span>{w.title}</span></span></h1>
+      <dl class="info reveal" style="margin: 0; grid-template-columns: 1fr">
+        {info.map(([l, v]) => <div><dt style="flex-basis: 96px">{l}</dt><dd style="line-height: 1.6">{v}</dd></div>)}
+      </dl>
+    </div>
+    <div style="flex: 2 1 640px"><MediaBox media={w.cover} class="grow" /></div>
+  </section>
+
+  <section class="wrap" style="display: flex; flex-direction: column; gap: 0; padding-bottom: 140px">
+    {w.gallery.length
+      ? <Blocks blocks={w.gallery} />
+      : <><MediaBox media={{ placeholder: 'Full width image', ratio: 16 / 9 }} class="grow" /><div class="pair" style="margin-top: 32px"><MediaBox media={{ placeholder: 'Image 4:5', ratio: 4 / 5 }} class="grow" /><MediaBox media={{ placeholder: 'Image 4:5', ratio: 4 / 5 }} class="grow" /></div></>}
+  </section>
+
+  <a href={`/works/${next.slug}`} class="wrap" style="display: block; padding-top: 96px; padding-bottom: 96px; border-top: 1px solid var(--line)">
+    <div class="mono">Next project</div>
+    <div style="margin-top: 16px; font-size: clamp(44px, 6vw, 96px); line-height: 1; letter-spacing: -0.04em">{next.title}</div>
+  </a>
+</Layout>

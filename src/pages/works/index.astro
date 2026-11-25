@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MediaBox from '../../components/Media.astro';
+import Cta from '../../components/Cta.astro';
+import { getWorks } from '../../lib/data';
+import { CATEGORIES } from '../../lib/site';
+const works = await getWorks();
+---
+<Layout title="Works · Ghoniyyu Maulidi" active="works">
+  <section class="works-head wrap">
+    <h1 class="serif-title" style="font-size: clamp(64px, 10vw, 176px)"><span class="line"><span>Works</span></span></h1>
+    <div class="chips" role="group" aria-label="Filter by category">
+      {CATEGORIES.map((c, i) => <button type="button" class="chip" data-cat={c} aria-pressed={i === 0 ? 'true' : 'false'}>{c}</button>)}
+    </div>
+  </section>
+
+  <section class="wgrid wrap" data-grid>
+    {works.map((w, i) => (
+      <a href={`/works/${w.slug}`} class={`wcard grow p${(i % 8) + 1}`} data-cat={w.category}>
+        <MediaBox media={w.cover} />
+        <span class="label">{w.title} <span style="color:#d4d4d4">({w.category})</span></span>
+      </a>
+    ))}
+  </section>
+
+  <Cta line1="Have a project" line2="in mind?" secondary={{ label: 'Hire on Upwork', href: 'https://www.upwork.com/freelancers/~0175f4cf8f669b5e0a' }} />
+</Layout>
+
+<script>
+  // Filter: staggered layout on "All", two equal columns for a single category.
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')];
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-grid] .wcard')];
+  const apply = (cat: string) => {
+    let n = 0;
+    cards.forEach((card) => {
+      const show = cat === 'All' || card.dataset.cat === cat;
+      card.hidden = !show;
+      card.className = card.className.replace(/\b(p\d|q)\b/g, '').trim();
+      if (show) {
+        card.classList.add(cat === 'All' ? `p${(n % 8) + 1}` : 'q');
+        card.classList.remove('in');
+        n++;
+      }
+    });
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.cat === cat)));
+    document.dispatchEvent(new Event('works:filtered'));
+  };
+  chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.cat!)));
+</script>

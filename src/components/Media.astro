@@ -1,0 +1,11 @@
+---
+import type { Media } from '../lib/types';
+interface Props { media?: Media; ratio?: number; contain?: boolean; class?: string; label?: boolean }
+const { media, ratio, contain = false, class: cls = '', label = true } = Astro.props;
+const r = ratio ?? media?.ratio ?? 16 / 10;
+---
+<div class={`media ${contain ? 'contain' : ''} ${cls}`} style={`aspect-ratio: ${r}`}>
+  {media?.url
+    ? <img src={media.url} alt={media.alt ?? ''} loading="lazy" decoding="async" />
+    : <div class="ph mono" style="height:100%">{label ? media?.placeholder ?? 'Image' : ''}</div>}
+</div>

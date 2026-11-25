@@ -1,0 +1,64 @@
+---
+// Renders CMS content: paragraphs, section headings, bullet lists,
+// single images, two images side by side, and looping videos.
+import type { Block } from '../lib/types';
+import MediaBox from './Media.astro';
+interface Props { blocks: Block[]; sectioned?: boolean }
+const { blocks, sectioned = false } = Astro.props;
+
+function esc(s: string) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function spans(b: any) {
+  return (b.children ?? [])
+    .map((c: any) => {
+      let t = esc(c.text ?? '');
+      if (c.marks?.includes('strong')) t = `<strong>${t}</strong>`;
+      if (c.marks?.includes('em')) t = `<em>${t}</em>`;
+      return t;
+    })
+    .join('');
+}
+const text = (b: any) => (b.children ?? []).map((c: any) => c.text).join('');
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+// Group consecutive bullet items into one list, and mark which headings get a divider.
+type Item = { kind: 'list'; items: any[] } | { kind: 'one'; block: any; divided?: boolean };
+const items: Item[] = [];
+let seenHeading = false;
+for (const b of blocks as any[]) {
+  if (b._type === 'block' && b.listItem) {
+    const last = items[items.length - 1];
+    if (last && last.kind === 'list') last.items.push(b);
+    else items.push({ kind: 'list', items: [b] });
+    continue;
+  }
+  if (b._type === 'block' && b.style === 'h2') {
+    items.push({ kind: 'one', block: b, divided: sectioned && seenHeading });
+    seenHeading = true;
+    continue;
+  }
+  items.push({ kind: 'one', block: b });
+}
+---
+{items.map((g) => {
+  if (g.kind === 'list') return <ul class="body-list">{g.items.map((i) => <li set:html={spans(i)} />)}</ul>;
+  const b = g.block;
+  if (b._type === 'block' && b.style === 'h2')
+    return <h2 id={slug(text(b))} class={`body-h2 reveal${g.divided ? ' divided' : ''}`}>{text(b)}</h2>;
+  if (b._type === 'block') return <p set:html={spans(b)} />;
+  if (b._type === 'image')
+    return <figure class="body-fig"><MediaBox media={b.image} class="grow" />{b.caption && <figcaption class="mono">{b.caption}</figcaption>}</figure>;
+  if (b._type === 'imagePair')
+    return <figure class="body-fig"><div class="pair"><MediaBox media={b.left} class="grow" /><MediaBox media={b.right} class="grow" /></div>{b.caption && <figcaption class="mono">{b.caption}</figcaption>}</figure>;
+  if (b._type === 'video')
+    return (
+      <figure class="body-fig">
+        <div class="media grow" style={`aspect-ratio: ${b.poster?.ratio ?? 16 / 9}`}>
+          <video src={b.url} poster={b.poster?.url} autoplay muted loop playsinline preload="metadata"></video>
+        </div>
+        {b.caption && <figcaption class="mono">{b.caption}</figcaption>}
+      </figure>
+    );
+  return null;
+})}
